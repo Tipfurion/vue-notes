@@ -22,6 +22,13 @@ import creator from './components/CardCreator.vue'
 import editor from './components/CardEditor.vue'
 import navbar from './components/Navbar.vue'
 import loginWindow from './components/LoginWindow.vue'
+//import 'firebase/firestore'
+import  {db}  from '../fireconf'
+//import { firestore } from 'firebase'
+
+
+
+
 export default {
     name: 'app',
     components: {
@@ -38,7 +45,14 @@ export default {
         crdContent:'',
         editorOutsideClick:false,
         editorActive:false,
+        notes:[],
         }
+    },
+    firestore:{
+       notes: db.collection('notes')
+    },
+    watch:{
+   
     },
     methods:{
       showEditor:function(headerAndContent){
@@ -60,6 +74,8 @@ export default {
         this.cards[index].content = headerAndContent[1];
         this.$refs.editor.cardEl.styleObject.visibility = 'visible';
         this.removeBlur()
+
+
       },
       changeCardColor:function(color, index){
         this.$refs.editor.cardEl.styleObject.backgroundColor = color;
@@ -106,9 +122,9 @@ export default {
         time:Date.now(),
       };
       this.cards.push(a)
-
+ 
+      
     }
-
 }
 </script>
 

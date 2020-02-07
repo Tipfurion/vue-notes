@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import  {db}  from '../../fireconf'
 export default{
     name:'creator',
     data: function () {
@@ -39,15 +40,21 @@ export default{
       this.$parent.crdHeader = this.crdHeader;
       this.$parent.crdContent = this.crdContent;
       this.$parent.cards.push({
-      header:this.crdHeader,
-      content:this.crdContent,
-      time:Date.now(),
+        header:this.crdHeader,
+        content:this.crdContent,
+        time:Date.now(),
       });
       this.crdContentEl.value = '';
       this.crdHeaderEl.value = '';  
       this.crdHeader='';
       this.crdContent='';
       this.resizeDiv()
+
+      //db.collection('notes').add({
+      //header: this.crdHeader,
+      //content: this.crdContent,
+      //})
+
     },  
 },
 mounted() {

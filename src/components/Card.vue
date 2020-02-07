@@ -78,6 +78,7 @@ export default {
       this.rowGap = parseInt(window.getComputedStyle(this.grid).getPropertyValue('grid-row-gap'));
       this.$nextTick(function() {addEventListener('resize',this.resizeCards)});
       this.resizeCards();
+      this.id = this.index
     },
     updated() {
       this.resizeCards();
