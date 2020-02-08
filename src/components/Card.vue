@@ -10,7 +10,9 @@
 </template>
 
 <script>
-//import vm from '../App.vue'
+import {db} from '../../fireconf'
+
+const notes = db.collection('notes')
 export default {
     name: 'card',
     data: function () {
@@ -39,9 +41,11 @@ export default {
           },
         }
       },
-    props: {
-    index:Number
-    },
+    props:['index'], 
+    //{
+    //index:String
+
+    //},
     methods:{
       resizeCards: function(){  
         clearTimeout(this.doit);
@@ -67,6 +71,9 @@ export default {
 
       },
     },
+    watch: {
+
+    },
     mounted: function () {
       this.item = this.$el.children[0];
       this.header = this.$parent.cards[this.index].header;
@@ -78,7 +85,7 @@ export default {
       this.rowGap = parseInt(window.getComputedStyle(this.grid).getPropertyValue('grid-row-gap'));
       this.$nextTick(function() {addEventListener('resize',this.resizeCards)});
       this.resizeCards();
-      this.id = this.index
+     // this.id = this.index
     },
     updated() {
       this.resizeCards();

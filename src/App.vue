@@ -68,12 +68,16 @@ export default {
         this.getBlur()
       },
       changeCardContent:function(headerAndContent, index){
-        this.$refs.editor.cardEl.header = headerAndContent[0];
-        this.$refs.editor.cardEl.content = headerAndContent[1]
-        this.cards[index].header = headerAndContent[0];
-        this.cards[index].content = headerAndContent[1];
+        if( this.$refs.editor.cardEl.header != headerAndContent[0] ||this.$refs.editor.cardEl.content != headerAndContent[1])
+        {
+            this.$refs.editor.cardEl.header = headerAndContent[0];
+            this.$refs.editor.cardEl.content = headerAndContent[1]
+            this.cards[index].header = headerAndContent[0];
+            this.cards[index].content = headerAndContent[1]; 
+        }
         this.$refs.editor.cardEl.styleObject.visibility = 'visible';
         this.removeBlur()
+        
 
 
       },
@@ -82,7 +86,11 @@ export default {
         this.cards[index].color = color;
       },
       deleteCard:function(index){
-        this.$delete(this.cards, index)
+        this.$delete(this.cards, index);
+
+        //this.$firestoreRefs.notes.doc(0).delete()
+        console.log(this.notes);
+        
       },
       getBlur:function(){
         //not vue
@@ -102,6 +110,19 @@ export default {
       changeNavbar:function(){
         this.$refs.navbar.logged=!this.$refs.navbar.logged;
       },
+      addCard:function(header,content,time)
+      {
+        let card = {
+            header:header,
+            content:content,
+            time:time,
+        }
+        this.cards.push(card);
+    //    db.collection('notes').add({
+     //       header: this.crdHeader,
+      //      content: this.crdContent,
+     //   })
+      }
     },
     created() {
       this.$root.$on('show-editor', this.showEditor)
@@ -113,6 +134,7 @@ export default {
       this.$root.$on('change-cards-arr', this.changeCardsArr)
       this.$root.$on('login', this.showLoginWindow)
       this.$root.$on('success-login', this.changeNavbar)
+      this.$root.$on('add-card', this.addCard)
     },
     mounted(){
       let a = 
@@ -122,6 +144,8 @@ export default {
         time:Date.now(),
       };
       this.cards.push(a)
+      console.log(this.notes);
+      
  
       
     }

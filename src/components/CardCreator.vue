@@ -37,19 +37,27 @@ export default{
     }
     },
     addCard:function(){
-      this.$parent.crdHeader = this.crdHeader;
-      this.$parent.crdContent = this.crdContent;
-      this.$parent.cards.push({
-        header:this.crdHeader,
-        content:this.crdContent,
-        time:Date.now(),
-      });
+      //this.$parent.crdHeader = this.crdHeader;
+      //this.$parent.crdContent = this.crdContent;
+      //this.$parent.cards.push({
+        //header:this.crdHeader,
+        //content:this.crdContent,
+        //time:Date.now(),
+      //});
+
+
+
+      this.$root.$emit('add-card', this.crdHeader, this.crdContent, Date.now())
+
+
+
+
       this.crdContentEl.value = '';
       this.crdHeaderEl.value = '';  
       this.crdHeader='';
       this.crdContent='';
       this.resizeDiv()
-
+      
       //db.collection('notes').add({
       //header: this.crdHeader,
       //content: this.crdContent,
