@@ -1,9 +1,9 @@
 <template>
   <div v-bind:id=templateId v-bind:style="styleObject" v-on:click="editCard" class="content_block" ref="templateRef" :data-index="index" >
     <div class="content_nested_text" ref="content_nested_text">
-    <h3>{{header}}</h3>
+    <h3 ref="headerRef">{{header}}</h3>
     <hr>
-    <pre>{{content}}</pre>
+    <pre ref="contentRef">{{content}}</pre>
     </div>
 </div>
 
@@ -67,7 +67,8 @@ export default {
       },
       editCard:function(){
         this.styleObject.visibility = 'hidden'
-        this.$root.$emit('show-editor', [this.header, this.content, this])
+       // this.$root.$emit('show-editor', [this.header, this.content, this])
+        this.$root.$emit('show-editor', this.index, this)
 
       },
     },

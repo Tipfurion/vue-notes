@@ -66,7 +66,7 @@ export default {
         close:function()
         {
             
-            this.$root.$emit('change-card-content', [this.crdHeader, this.crdContent, this.cardEl], this.cardEl.$el.getAttribute('data-index'));
+            this.$root.$emit('change-card-content', this.crdHeader, this.crdContent, this.cardEl.$el.getAttribute('data-index'));
             this.changeActive();
         },
         deleteCard:function()

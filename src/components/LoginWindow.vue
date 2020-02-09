@@ -13,6 +13,7 @@
                   
                   <div id="register" v-else>
                       <div class="login-window-register-header" >registration</div>
+                      <hr>
                       <div class="login_window_text">user name</div>
                       <input  placeholder="user name" class="login_window_login">
                       <div class="login_window_text">password</div>

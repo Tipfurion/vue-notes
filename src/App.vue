@@ -7,7 +7,7 @@
                 <div class="main-wrapper">
                         <creator></creator>
                         <div class="content grid_item" ref="content">    
-                                <card v-for="(card, i) in cards" :key="card.time" :index=i></card>
+                                <card v-for="(card, i) in cards" :key="card.createdAt" :index=i></card>
                         </div> 
                 </div> 
             </div>  
@@ -49,31 +49,35 @@ export default {
         }
     },
     firestore:{
-       notes: db.collection('notes')
+       cards: db.collection('notes').orderBy('createdAt')
     },
     watch:{
    
     },
     methods:{
-      showEditor:function(headerAndContent){
+      showEditor:function(index, el){
         
         this.$refs.editor.active = true;
-        this.$refs.editor.crdHeader = headerAndContent[0];
-        this.$refs.editor.crdContent = headerAndContent[1];
-        this.$refs.editor.cardEl = headerAndContent[2];
-        //color
-        this.$refs.editor.styleObject.backgroundColor = headerAndContent[2].styleObject.backgroundColor;
+        this.$refs.editor.crdHeader = this.cards[index].header;
+        this.$refs.editor.crdContent = this.cards[index].content;
+        this.$refs.editor.cardEl = el;
+        //color      
+        this.$refs.editor.styleObject.backgroundColor = el.styleObject.backgroundColor;
         
         this.$refs.editor.resizeDiv()
         this.getBlur()
       },
-      changeCardContent:function(headerAndContent, index){
-        if( this.$refs.editor.cardEl.header != headerAndContent[0] ||this.$refs.editor.cardEl.content != headerAndContent[1])
+      changeCardContent:function(header, content, index){
+        if( this.$refs.editor.cardEl.header != header ||this.$refs.editor.cardEl.content != content)
         {
-            this.$refs.editor.cardEl.header = headerAndContent[0];
-            this.$refs.editor.cardEl.content = headerAndContent[1]
-            this.cards[index].header = headerAndContent[0];
-            this.cards[index].content = headerAndContent[1]; 
+            this.$refs.editor.cardEl.$refs.headerRef.innerText = header;
+            this.$refs.editor.cardEl.$refs.contentRef.innerText = content;
+            this.$refs.editor.crdHeader = header;
+            this.$refs.editor.crdContent = content;      
+            let changeId = this.cards[index].id;
+            db.collection('notes').doc(changeId).update(
+                {header:header,
+                content:content})
         }
         this.$refs.editor.cardEl.styleObject.visibility = 'visible';
         this.removeBlur()
@@ -86,10 +90,11 @@ export default {
         this.cards[index].color = color;
       },
       deleteCard:function(index){
-        this.$delete(this.cards, index);
 
-        //this.$firestoreRefs.notes.doc(0).delete()
-        console.log(this.notes);
+        
+        let delId = this.cards[index].id
+        db.collection('notes').doc(delId).delete();
+        
         
       },
       getBlur:function(){
@@ -117,11 +122,13 @@ export default {
             content:content,
             time:time,
         }
-        this.cards.push(card);
-    //    db.collection('notes').add({
-     //       header: this.crdHeader,
-      //      content: this.crdContent,
-     //   })
+        db.collection('notes').add({
+            header: header,
+            content: content,
+            createdAt:time,
+        })
+        
+        
       }
     },
     created() {
@@ -137,15 +144,17 @@ export default {
       this.$root.$on('add-card', this.addCard)
     },
     mounted(){
-      let a = 
-      {
-        content:"welcome on my github page \ngithub.com/Tipfurion",
-        header:"Hello!",
-        time:Date.now(),
-      };
-      this.cards.push(a)
-      console.log(this.notes);
+    //   let a = 
+    //   {
+    //     content:"welcome on my github page \ngithub.com/Tipfurion",
+    //     header:"Hello!",
+    //     time:Date.now(),
+    //   };
+    //   this.cards.push(a)
+
+    
       
+
  
       
     }
