@@ -1,7 +1,8 @@
 <template>
+    <transition name="slide">
     <div class="card_editor " ref="editor"  v-bind:style="styleObject" v-click-outside="close" v-if="active">
-              <textarea v-model="crdHeader" placeholder="Название" class="crd_header_edit" ref="crdHeader" ></textarea><hr>
-              <textarea v-model="crdContent" placeholder="Заметка" class="crd_content_edit" @input="resizeDiv" ref="crdContent"></textarea>
+              <textarea v-model="crdHeader" placeholder="Title" class="crd_header_edit" ref="crdHeader" ></textarea>
+              <textarea v-model="crdContent" placeholder="note text" class="crd_content_edit" @input="resizeDiv" ref="crdContent"></textarea>
               
               <div class="btnContainer">
                 <div class="color-picker" v-if="colorActive">
@@ -19,7 +20,9 @@
                 <button @click="ColorCard()" class="btn settingsBtn"><img src="https://img.icons8.com/material-outlined/24/000000/settings.png"></button>
                 <button @click="deleteCard()" class="btn deleteBtn"><img src="https://img.icons8.com/material/24/000000/delete-forever--v1.png"></button>
               </div>
-            </div>
+    </div>
+    </transition>
+        
 </template>
 <script>
 export default {
@@ -78,7 +81,7 @@ export default {
         changeColor: function(color){
             this.styleObject.backgroundColor = color;
             let cardId = this.cardEl.$el.getAttribute('data-index') 
-            this.$root.$emit('change-card-color',color, cardId)
+            this.$root.$emit('change-card-color',color, cardId, this.cardEl)
             
             
         },

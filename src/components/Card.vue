@@ -2,7 +2,7 @@
   <div v-bind:id=templateId v-bind:style="styleObject" v-on:click="editCard" class="content_block" ref="templateRef" :data-index="index" >
     <div class="content_nested_text" ref="content_nested_text">
     <h3 ref="headerRef">{{header}}</h3>
-    <hr>
+
     <pre ref="contentRef">{{content}}</pre>
     </div>
 </div>
@@ -36,8 +36,8 @@ export default {
             rowSpan:null,
             display:'block',
             visibility:'visible',
-            backgroundColor:'white',
-            
+            backgroundColor:"#fff",
+            border:null,
           },
         }
       },
@@ -79,6 +79,7 @@ export default {
       this.item = this.$el.children[0];
       this.header = this.$parent.cards[this.index].header;
       this.content = this.$parent.cards[this.index].content;
+      this.styleObject.backgroundColor = this.$parent.cards[this.index].color;
       this.grid = this.$parent.$refs.content;
       this.padding = parseInt(window.getComputedStyle(this.$refs.content_nested_text).getPropertyValue('padding'))*2;
       this.margin = parseInt(window.getComputedStyle(this.$el).getPropertyValue('margin'))*2;
@@ -86,6 +87,14 @@ export default {
       this.rowGap = parseInt(window.getComputedStyle(this.grid).getPropertyValue('grid-row-gap'));
       this.$nextTick(function() {addEventListener('resize',this.resizeCards)});
       this.resizeCards();
+      if(this.$parent.cards[this.index].color != '#fff')
+      {
+        this.styleObject.border = 'none'
+      }
+      else
+      {
+        this.styleObject.border = null
+      }
      // this.id = this.index
     },
     updated() {

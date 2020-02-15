@@ -1,6 +1,7 @@
 <template>
         <div id="app">
         <editor ref="editor"></editor>
+        <notify ref="notify"></notify>
         <login-window ref="login"></login-window>
             <div class="blur_block" ref="blur">
                 <navbar ref="navbar"></navbar>
@@ -22,6 +23,7 @@ import creator from './components/CardCreator.vue'
 import editor from './components/CardEditor.vue'
 import navbar from './components/Navbar.vue'
 import loginWindow from './components/LoginWindow.vue'
+import notify from './components/Notify.vue'
 //import 'firebase/firestore'
 import  {db}  from '../fireconf'
 //import { firestore } from 'firebase'
@@ -29,14 +31,15 @@ import  {db}  from '../fireconf'
 
 
 
-export default {
+export default{
     name: 'app',
     components: {
         card,
         creator,
         editor,
         navbar,
-        loginWindow
+        loginWindow,
+        notify
     },
     data:function() { 
         return{
@@ -45,14 +48,16 @@ export default {
         crdContent:'',
         editorOutsideClick:false,
         editorActive:false,
-        notes:[],
+        userId:'start',
         }
     },
     firestore:{
-       cards: db.collection('notes').orderBy('createdAt')
+      // cards: db.collection('notes').where('creator','==',userId).orderBy('createdAt')
     },
     watch:{
-   
+        userId:function(){
+            this.$bind('cards', db.collection("notes").where("creator", "==", this.userId).orderBy('createdAt'))
+        }
     },
     methods:{
       showEditor:function(index, el){
@@ -85,16 +90,31 @@ export default {
 
 
       },
-      changeCardColor:function(color, index){
+      changeCardColor:function(color, index, cardEl){
         this.$refs.editor.cardEl.styleObject.backgroundColor = color;
-        this.cards[index].color = color;
+        if(color != "#fff")
+        {
+            cardEl.styleObject.border = 'none'
+        }
+        else
+        {
+            cardEl.styleObject.border = null
+        }
+        let changeId = this.cards[index].id;
+        db.collection('notes').doc(changeId).update(
+            {color:color})
       },
       deleteCard:function(index){
 
-        
-        let delId = this.cards[index].id
-        db.collection('notes').doc(delId).delete();
-        
+        if(this.userId!='start')
+        {
+            let delId = this.cards[index].id
+            db.collection('notes').doc(delId).delete();
+        }
+        else
+        { 
+            this.$root.$emit('notify','in order to delete notes log in to your account!');
+        }
         
       },
       getBlur:function(){
@@ -117,31 +137,50 @@ export default {
       },
       addCard:function(header,content,time)
       {
-        let card = {
-            header:header,
-            content:content,
-            time:time,
-        }
-        db.collection('notes').add({
+        if(this.userId!='start')
+        {
+            db.collection('notes').add({
             header: header,
             content: content,
             createdAt:time,
-        })
-        
-        
-      }
+            color:"#fff",
+            creator:this.userId
+            })   
+        }
+        else
+        {
+            this.$root.$emit('notify','in order to create notes log in to your account!');
+        }
+      },
+      setNickname:function(nickname) {
+            this.$refs.navbar.username = nickname;         
+      },
+      setUserId:function(id) {
+            this.userId=id;      
+      },
+      notifyShow:function(message) {
+            this.$refs.notify.message=message;
+            this.$refs.notify.active=true;
+            
+      }               
     },
     created() {
-      this.$root.$on('show-editor', this.showEditor)
-      this.$root.$on('change-card-content', this.changeCardContent)
-      this.$root.$on('change-card-color', this.changeCardColor)
-      this.$root.$on('delete-card', this.deleteCard)
-      this.$root.$on('remove-blur', this.removeBlur)
-      this.$root.$on('get-blur', this.getBlur)
-      this.$root.$on('change-cards-arr', this.changeCardsArr)
-      this.$root.$on('login', this.showLoginWindow)
-      this.$root.$on('success-login', this.changeNavbar)
-      this.$root.$on('add-card', this.addCard)
+        this.$bind('cards', db.collection("notes").where("creator", "==", this.userId).orderBy('createdAt'))
+        
+
+        this.$root.$on('show-editor', this.showEditor)
+        this.$root.$on('change-card-content', this.changeCardContent)
+        this.$root.$on('change-card-color', this.changeCardColor)
+        this.$root.$on('delete-card', this.deleteCard)
+        this.$root.$on('remove-blur', this.removeBlur)
+        this.$root.$on('get-blur', this.getBlur)
+        this.$root.$on('change-cards-arr', this.changeCardsArr)
+        this.$root.$on('login-press', this.showLoginWindow)
+        this.$root.$on('success-login', this.changeNavbar)
+        this.$root.$on('add-card', this.addCard)
+        this.$root.$on('set-nickname', this.setNickname)
+        this.$root.$on('set-user-id', this.setUserId)
+        this.$root.$on('notify', this.notifyShow)
     },
     mounted(){
     //   let a = 
@@ -324,7 +363,7 @@ body{
     font-size: 30px;
     cursor: default;
     user-select: none;
-
+    color: darkgrey;
     
 }
 .login-window-btn-close
@@ -514,23 +553,23 @@ body{
     position: relative;
     right:30px;
     font-size: 18px;
-    border-radius: 20px;
-    width: 100px;
-    height: 40px;
+    border-radius: 100px;
+    width: 120px;
+    height: 60px;
 }
 .settingsBtn
 {
     position: relative;
-    width: 50px;
-    height: 50px;
-    border-radius: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
 }
 .deleteBtn
 {
     position: relative; 
-    width: 50px;
-    height: 50px;
-    border-radius: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
 }
 .btnContainer
 {
@@ -598,6 +637,10 @@ body{
     resize: none;
     font-size: 1.5rem;
 }
+.non-white-card
+{
+    border:none
+}
 textarea
 {
     border: none;
@@ -631,5 +674,26 @@ input
     outline:none;
     font-family: 'Roboto', sans-serif;
     background-color:transparent;
+}
+.fade-enter-active, .fade-leave-active
+{
+  transition: .3s;
+}
+.fade-enter, .fade-leave-to 
+{
+  opacity: 0;
+}
+.slide-enter-active, .slide-leave-active
+{
+transition:  .1s;
+}
+.slide-enter {
+  transform: translate(-100%, 0);
+  sopacity: 0;
+}
+.slide-leave-to {
+  transform: translate(100%, 0);
+  sopacity: 0;
+
 }
 </style>
