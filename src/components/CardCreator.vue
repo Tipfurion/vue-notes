@@ -1,14 +1,14 @@
 <template>
 <div class="card_constructor   grid_item" v-bind:style="{ gridRowEnd:styleObject.gridRowEnd}" >
-    <textarea v-model="crdHeader" placeholder="Title" class="crd_header" @input="resizeDiv" ref="crdHeader" ></textarea>
-    <textarea v-model="crdContent" placeholder="note text" class="crd_content" @input="resizeDiv" ref="crdContent"></textarea>
+    <textarea v-model="crdHeader" :tabindex="blur"  placeholder="Title" class="crd_header" @input="resizeDiv" ref="crdHeader" ></textarea>
+    <textarea v-model="crdContent" :tabindex="blur"  placeholder="note text" class="crd_content" @input="resizeDiv" ref="crdContent"></textarea>
     <button @click="addCard()" class="btn addBtn">+</button>
 </div>
 
 </template>
 
 <script>
-import  {db}  from '../../fireconf'
+
 export default{
     name:'creator',
     data: function () {
@@ -18,6 +18,7 @@ export default{
       crdHeaderEl:null,
       crdContentEl:null,
       doit:0,
+      blur:0,
       styleObject: {
 
       },
@@ -37,32 +38,12 @@ export default{
     }
     },
     addCard:function(){
-      //this.$parent.crdHeader = this.crdHeader;
-      //this.$parent.crdContent = this.crdContent;
-      //this.$parent.cards.push({
-        //header:this.crdHeader,
-        //content:this.crdContent,
-        //time:Date.now(),
-      //});
-
-
-
       this.$root.$emit('add-card', this.crdHeader, this.crdContent, Date.now())
-
-
-
-
       this.crdContentEl.value = '';
       this.crdHeaderEl.value = '';  
       this.crdHeader='';
       this.crdContent='';
       this.resizeDiv()
-      
-      //db.collection('notes').add({
-      //header: this.crdHeader,
-      //content: this.crdContent,
-      //})
-
     },  
 },
 mounted() {

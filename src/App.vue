@@ -6,7 +6,7 @@
             <div class="blur_block" ref="blur">
                 <navbar ref="navbar"></navbar>
                 <div class="main-wrapper">
-                        <creator></creator>
+                        <creator ref="creator"></creator>
                         <div class="content grid_item" ref="content">    
                                 <card v-for="(card, i) in cards" :key="card.createdAt" :index=i></card>
                         </div> 
@@ -120,10 +120,13 @@ export default{
       getBlur:function(){
         //not vue
         this.$refs.blur.classList.add('blur_block_active')
+        this.$refs.creator.blur=-1;
+        
       },
       removeBlur:function(){
         //not vue
         this.$refs.blur.classList.remove('blur_block_active')
+        this.$refs.creator.blur=0;
       },
       changeCardsArr:function(index, header, content){
         this.cards[index].header = header;
@@ -263,29 +266,7 @@ body{
   
     
 }
-.login-text
-{
-    
-    cursor: default;
-    word-wrap: normal;
-    width: 100%;
-    height: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    user-select: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
 
-}
-
-.login-clickable:hover
-{
-    background-color: lightgrey;
-}
 .user-name
 {
     overflow: hidden;
@@ -304,108 +285,7 @@ body{
     padding: 10px;
     padding-right:  20px;
 }
-.login-window
-{
-    top: 10%;
-    left: 0; 
-    right: 0;
-    margin: auto;
-    width: 500px;
-    height: 600px;
-    padding: 40px;
-    opacity: 1;
-    position: absolute;
-    z-index: 1000;
-    border: 2px solid lightgrey;
-    border-radius: 10px;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-}
-.login_window_register
-{
-    margin-top: 80px;
-    font-size: 22px;
-    border-radius: 50px;
-    padding: 10px;
-    width: 80px;
-    margin-left: 380px;
-    text-align:center;
-    cursor: default;
-    user-select: none;
-}
-.login_window_register:hover
-{
-    background-color: gray;
-}
-.login_window_login
-{
-    width: 100%;
-    padding: 0;
-    border-bottom: 2px solid lightgrey;
-    font-size: 20px;
 
-}
-.login_window_password
-{
-    width: 100%;
-    padding: 0;
-    border-bottom: 2px solid lightgrey;
-    font-size: 20px;
-
-}
-.login_window_text
-{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px;
-    font-size: 30px;
-    cursor: default;
-    user-select: none;
-    color: darkgrey;
-    
-}
-.login-window-btn-close
-{
-    margin-top: 80px;
-    margin-left: 410px;
-}
-.login-window-btn-login
-{
-    position: relative;
-    font-size: 18px;
-    border-radius: 20px;
-    width: 150px;
-    height: 40px;
-    margin-left: 170px;
-    margin-top: 50px;
-
-}
-.login-window-register-header
-{
-   
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 35px;
-    height: 42px;
-    font-weight: bold;
-
-}
-.incorrect
-{
-    font-size: 20px;
-    color: #ea4343;
-    font-weight: bold;
-    margin-top: 30px;
-    position: absolute;
-}
-.after-reg-log
-{
-    margin-top: 38px;
-}
 .left_panel
 {
     grid-area:  2/2/4/1;
@@ -444,7 +324,7 @@ body{
     overflow-y: auto;
     height: 90%;
     padding: 20px;
-    
+    background-image: url('../src/icons/back2.png')
     
 }
 
@@ -641,6 +521,7 @@ body{
 {
     border:none
 }
+
 textarea
 {
     border: none;

@@ -2,7 +2,7 @@
     <transition name="slide">
     <div class="card_editor " ref="editor"  v-bind:style="styleObject" v-click-outside="close" v-if="active">
               <textarea v-model="crdHeader" placeholder="Title" class="crd_header_edit" ref="crdHeader" ></textarea>
-              <textarea v-model="crdContent" placeholder="note text" class="crd_content_edit" @input="resizeDiv" ref="crdContent"></textarea>
+              <textarea v-model="crdContent"  placeholder="note text" class="crd_content_edit" @input="resizeDiv" ref="crdContent"></textarea>
               
               <div class="btnContainer">
                 <div class="color-picker" v-if="colorActive">
@@ -17,8 +17,8 @@
                   <div class="color-circle" @click="changeColor('#e8eaed')" style="background-color:#e8eaed"> </div>
                 </div>
                 <button @click="close" class="btn closeBtn">close</button>
-                <button @click="ColorCard()" class="btn settingsBtn"><img src="https://img.icons8.com/material-outlined/24/000000/settings.png"></button>
-                <button @click="deleteCard()" class="btn deleteBtn"><img src="https://img.icons8.com/material/24/000000/delete-forever--v1.png"></button>
+                <button @click="ColorCard()" class="btn settingsBtn"><img src="../icons/color.png"></button>
+                <button @click="deleteCard()" class="btn deleteBtn"><img src="../icons/delete.png"></button>
               </div>
     </div>
     </transition>
@@ -37,7 +37,8 @@ export default {
         active:false,
         colorActive:false,
         styleObject: {
-        backgroundColor:'white'
+            backgroundColor:'white',
+            border:null
         },
     }
   },
@@ -89,7 +90,20 @@ export default {
         {
             this.colorActive=!this.colorActive;
         }
-},
+    },
+    watch: {
+        active:function(){
+            if(this.cardEl.styleObject.backgroundColor != '#fff')
+            {
+                this.styleObject.border = 'none';
+            }
+            else
+            {
+                this.styleObject.border=null;
+            }
+            
+        }
+    },
 mounted() {
   this.crdContentEl = this.$refs.crdContent;
   this.crdHeaderEl = this.$refs.crdHeader;

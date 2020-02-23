@@ -8,7 +8,7 @@
                       <input v-model="email" placeholder="e-mail" class="login_window_login"  >
                       <div class="login_window_text">password</div>
                       <input v-model="password" type="password" placeholder="password" class="login_window_password">
-                      <button @click="login" class="btn login-window-btn-login">login</button>
+                      <input type="submit" @click="login" class="btn login-window-btn-login" value="login">
                       <div class="incorrect" v-show="incorrect" >incorrect password or username! </div>
                       <div class="login_window_register" @click="changeLoginNeed" >register</div>
                       <button @click="close" class="btn closeBtn login-window-btn-close">close</button>
@@ -33,7 +33,7 @@
 
 <script>
 import {initFirebase} from '../../fireconf'
-
+import * as firebase from 'firebase';
 
 export default {
     name:'login-window',
@@ -50,6 +50,8 @@ export default {
   methods:{
     close:function()
     {
+      console.log(firebase.auth.Auth);
+      
       this.active=false;
       this.$root.$emit('remove-blur')
     },
@@ -58,8 +60,11 @@ export default {
     },
 
     login:function(){ 
-       initFirebase.auth().signInWithEmailAndPassword(this.email, this.password).then(()=>
+      initFirebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(()=>
+      {
+       return initFirebase.auth().signInWithEmailAndPassword(this.email, this.password).then(()=>
        {
+          
           this.emitId()
           this.$root.$emit('success-login'); 
           this.close();
@@ -81,6 +86,7 @@ export default {
           }
           console.log(error);
         });
+      })
     },
     setNickname:function(){
       this.$root.$emit('set-nickname', this.email)
@@ -119,6 +125,123 @@ export default {
 
       
     },
+  },
+  created(){
+    initFirebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      this.emitId()
+      this.$root.$emit('set-nickname', user.email)
+      this.$root.$emit('success-login'); 
+    }
+})
   }
 }
 </script>
+
+<style scoped>
+.login-window
+{
+    top: 10%;
+    left: 0; 
+    right: 0;
+    margin: auto;
+    width: 500px;
+    height: 600px;
+    padding: 40px;
+    opacity: 1;
+    position: absolute;
+    z-index: 1000;
+    border: 2px solid lightgrey;
+    border-radius: 10px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+.login_window_register
+{
+    margin-top: 80px;
+    font-size: 22px;
+    border-radius: 50px;
+    padding: 10px;
+    width: 80px;
+    margin-left: 380px;
+    text-align:center;
+    cursor: default;
+    user-select: none;
+}
+.login_window_register:hover
+{
+    background-color: gray;
+}
+.login_window_login
+{
+    width: 100%;
+    padding: 0;
+    border-bottom: 2px solid lightgrey;
+    font-size: 20px;
+
+}
+.login_window_password
+{
+    width: 100%;
+    padding: 0;
+    border-bottom: 2px solid lightgrey;
+    font-size: 20px;
+
+}
+.login_window_text
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    font-size: 30px;
+    cursor: default;
+    user-select: none;
+    color: darkgrey;
+    
+}
+.login-window-btn-close
+{
+    margin-top: 80px;
+    margin-left: 410px;
+}
+.login-window-btn-login
+{
+    position: relative;
+    font-size: 18px;
+    border-radius: 20px;
+    width: 150px;
+    height: 40px;
+    margin-left: 170px;
+    margin-top: 50px;
+}
+.login-window-btn-login:focus
+{
+  background-color: gray
+}
+.login-window-register-header
+{
+   
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    height: 42px;
+    font-weight: bold;
+
+}
+.incorrect
+{
+    font-size: 20px;
+    color: #ea4343;
+    font-weight: bold;
+    margin-top: 30px;
+    position: absolute;
+}
+.after-reg-log
+{
+    margin-top: 38px;
+}
+</style>

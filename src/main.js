@@ -20,7 +20,7 @@ Vue.directive('click-outside', {
     };
     window.addEventListener('mousedown', window.event)
   },
-  unbind: function (el) {
+  unbind: function () {
     window.removeEventListener('mousedown', window.event)
   },
 });

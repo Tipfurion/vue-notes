@@ -12,7 +12,7 @@
 <script>
 import {db} from '../../fireconf'
 
-const notes = db.collection('notes')
+
 export default {
     name: 'card',
     data: function () {
@@ -42,10 +42,6 @@ export default {
         }
       },
     props:['index'], 
-    //{
-    //index:String
-
-    //},
     methods:{
       resizeCards: function(){  
         clearTimeout(this.doit);
@@ -67,14 +63,11 @@ export default {
       },
       editCard:function(){
         this.styleObject.visibility = 'hidden'
-       // this.$root.$emit('show-editor', [this.header, this.content, this])
         this.$root.$emit('show-editor', this.index, this)
 
       },
     },
-    watch: {
 
-    },
     mounted: function () {
       this.item = this.$el.children[0];
       this.header = this.$parent.cards[this.index].header;
@@ -95,7 +88,6 @@ export default {
       {
         this.styleObject.border = null
       }
-     // this.id = this.index
     },
     updated() {
       this.resizeCards();
